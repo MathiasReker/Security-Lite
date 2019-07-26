@@ -1,4 +1,4 @@
-#PrestaShop Module: Security Lite
+# PrestaShop Module: Security Lite
 
 With this module the risk of getting hacked is decreased. You should always care about security. By using this module, you add another layer of security to your PrestaShop website, that will benefit you in case someone tries to get unauthorized access.
 I did not add settings that are obviously already covered by PrestaShop core with another technique, but when that it said, if some technique having more layers is good practice, I added those extra layers of security.
