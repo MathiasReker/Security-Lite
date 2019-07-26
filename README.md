@@ -18,3 +18,5 @@ Download it here: https://github.com/MathiasReker/Security-Lite/releases/latest
 Build to work with PrestaShop 1.7.0.0+
  
 This module use no overrides and passes PrestaShop's Validator.
+
+## The PRO version can be bought here: https://addons.prestashop.com/en/website-security-access/44413-security-pro.html
