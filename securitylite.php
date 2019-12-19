@@ -23,7 +23,7 @@ class SecurityLite extends Module
     {
         $this->name = 'securitylite';
         $this->tab = 'administration';
-        $this->version = '2.0.0';
+        $this->version = '3.0.0';
         $this->author = 'Mathias Reker';
         $this->module_key = '';
         $this->need_instance = 0;
@@ -40,8 +40,6 @@ class SecurityLite extends Module
     public function install()
     {
         include _PS_MODULE_DIR_ . $this->name . '/sql/install.php';
-
-        $this->checkHtaccess();
 
         Configuration::updateValue('LITE_BAN_TIME', 30);
         Configuration::updateValue('LITE_MAX_RETRY', 5);
@@ -64,11 +62,6 @@ class SecurityLite extends Module
         foreach (array_keys($form_values) as $key) {
             Configuration::deleteByName($key);
         }
-        $file = _PS_ROOT_DIR_ . '/.htaccess';
-
-        if (file_exists($file)) {
-            $this->removeHtaccessContent($file);
-        }
 
         return parent::uninstall();
     }
@@ -78,13 +71,7 @@ class SecurityLite extends Module
         $out = null;
 
         $url = 'https://addons.prestashop.com/en/website-security-access/44413-security-pro.html';
-
-        if (isset($_SERVER['HTACCESS'])) {
-            $out .= $this->displayInformation($this->l('All features in') . ' <a href="' . $url . '" target="_blank">Security Pro</a> ' . $this->l('will work on your setup!') . ' (' .
-                $_SERVER['SERVER_SOFTWARE'] . ')');
-        } else {
-            $out .= $this->displayInformation($this->l('Some features in') . ' <a href="' . $url . '" target="_blank">Security Pro</a> ' . $this->l('might not work on your setup, because your .htaccess file is not used!') . ' (' . $_SERVER['SERVER_SOFTWARE'] . ')');
-        }
+        $out .= $this->displayInformation($this->l('To unlock pro features, buy pro version:') . ' <a href="' . $url . '" target="_blank">Security Pro</a> ');
 
         if ((bool) Tools::isSubmit('submitSecurityLiteModule')) {
             $this->postProcess();
@@ -129,26 +116,82 @@ class SecurityLite extends Module
         return $out . $this->renderForm() . $this->checkSystem() . $this->securityPro();
     }
 
-    public function checkHtaccess()
+    private function chmodFileDir($dir)
     {
-        $Prestashop_closing = '# ~~end~~ Do not remove this comment, Prestashop will keep automatically the code outside this comment when .htaccess will be generated again';
-        $security_lite_starts = '# ~security_lite~';
-        $current = 'SetEnv HTACCESS on';
-        $security_lite_ends = '# ~security_lite_end~';
+        if (Configuration::get('LITE_PERMISSIONS')) {
+            $perms = [];
+            $perms['file'] = 0644;
+            $perms['directory'] = 0755;
+            $error_dir = null;
+            $error_file = null;
+            $dh = @opendir($dir);
 
-        if (!$htaccess_content = Tools::file_get_contents(_PS_ROOT_DIR_ . '/.htaccess')) {
-            Tools::generateHtaccess();
-            $htaccess_content = Tools::file_get_contents(_PS_ROOT_DIR_ . '/.htaccess');
-        }
-        $content_to_add = $security_lite_starts . PHP_EOL . $current . PHP_EOL . $security_lite_ends;
+            if ($dh) {
+                while (false !== ($file = readdir($dh))) {
+                    if ('.' !== $file && '..' !== $file) {
+                        $fullpath = $dir . '/' . $file;
 
-        if (preg_match('/\# ~security_lite~(.*?)\# ~security_lite_end~/s', $htaccess_content, $m)) {
-            $content_to_remove = $m[0];
-            $htaccess_content = str_replace($content_to_remove, $content_to_add, $htaccess_content);
-        } else {
-            $htaccess_content = str_replace($Prestashop_closing, $Prestashop_closing . PHP_EOL . PHP_EOL . $content_to_add, $htaccess_content);
+                        if (!is_dir($fullpath)) {
+                            if (!chmod($fullpath, $perms['file'])) {
+                                $error_file .= '<strong>' . $this->l('Failed') . '</strong> ' . $this->l('to set file permissions on') . ' ' . $fullpath . PHP_EOL;
+                            }
+                        } else {
+                            if (chmod($fullpath, $perms['directory'])) {
+                                $this->chmodFileDir($fullpath);
+                            } else {
+                                $error_dir .= '<strong>' . $this->l('Failed') . '</strong> ' . $this->l('to set directory permissions on') . ' ' . $fullpath . PHP_EOL;
+                            }
+                        }
+                    }
+                }
+                closedir($dh);
+            }
         }
-        file_put_contents(_PS_ROOT_DIR_ . '/.htaccess', $htaccess_content);
+    }
+
+    private function blockIp()
+    {
+        if (Configuration::get('LITE_BAN_IP_ACTIVATE') && '' !== Configuration::get('LITE_BAN_IP')) {
+            $deny = explode(',', preg_replace('/\s+/', '', Configuration::get('LITE_BAN_IP')));
+
+            if (in_array($_SERVER['REMOTE_ADDR'], $deny)) {
+                header('HTTP/1.1 403 Forbidden');
+
+                die;
+            }
+        }
+    }
+
+    private function ban()
+    {
+        $this->context->employee->logout();
+
+        die('Banned');
+    }
+
+    private function getBanTime($email)
+    {
+        $sql = new DbQuery();
+        $sql->select('MAX(access_time) AS access_time');
+        $sql->from('securitylite');
+        $sql->where('banned = 1');
+        $sql->where(sprintf('email = "%s"', pSQL($email)));
+        $sqlResult = Db::getInstance()->executeS($sql);
+
+        return $sqlResult ? strtotime($sql) : 0;
+    }
+
+    private function getEldestAccessTry($email)
+    {
+        $maxRetry = (int) ConfigurationCore::get('LITE_MAX_RETRY');
+        $email = pSQL($email);
+        $query = 'SELECT IF(COUNT(*) = ' . $maxRetry .
+        ', MIN(access_time), \'0000-00-00 00:00:00\') AS access_time FROM (SELECT access_time FROM ' .
+        _DB_PREFIX_ . 'securitylite WHERE banned = 0 AND email = "' .
+        $email . '" ORDER BY access_time DESC LIMIT ' . $maxRetry . ') tmp';
+        $accessStats = Db::getInstance()->getRow($query);
+
+        return $accessStats ? strtotime($accessStats['access_time']) : 0;
     }
 
     public function hookDisplayHeader($params)
@@ -240,142 +283,6 @@ class SecurityLite extends Module
             <h1>With Security Pro:</h1>
         <img src="' . $this->context->link->getBaseLink() . 'modules/' .
         $this->name . '/views/img/security-scan.png"></div>';
-    }
-
-    public function checkSystem()
-    {
-        $pro_feature = '<span style="color: #25beef;"><strong>' . $this->l('PRO FEATURE!') . '</strong></span>';
-        $helper_list = new HelperList();
-        $helper_list->module = $this;
-        $helper_list->title = $this->l('Scans your system for known security vulnerabilities and recommends options for increased protection');
-        $helper_list->shopLinkType = '';
-        $helper_list->no_link = true;
-        $helper_list->show_toolbar = true;
-        $helper_list->simple_header = false;
-        $helper_list->currentIndex = $this->context->link->getAdminLink('AdminModules', false) .
-        '&configure=' . $this->name;
-        $helper_list->token = Tools::getAdminTokenLite('AdminModules');
-        $check = '<i class="icon icon-check" style="color: green"></i>';
-        $vulnerable = '<i class="icon icon-times" style="color: red"></i>';
-        $fields_list = [
-            'check' => [
-                'title' => '<strong>' . $this->l('Check') . '</strong>',
-                'search' => false,
-                'float' => true,
-            ],
-            'status' => [
-                'title' => '<strong>' . $this->l('Status') . '</strong>',
-                'search' => false,
-                'float' => true,
-            ],
-            'fix' => [
-                'title' => '<strong>' . $this->l('How to fix') . '</strong>',
-                'search' => false,
-                'float' => true,
-            ],
-        ];
-        $result = [
-            [
-                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19355" target="_blank">' . $this->l('CVE-2018-19355') . '</a>',
-                'status' => file_exists(_PS_MODULE_DIR_ . 'orderfiles/upload.php') ? $vulnerable : $check,
-                'fix' => $this->l('Upgrade PrestaShop to latest version'),
-            ],
-            [
-                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19124" target="_blank">CVE-2018-19124</a>, ' .
-                '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19125" target="_blank">CVE-2018-19125</a>, ' .
-                '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19126" target="_blank">CVE-2018-19126</a>',
-                'status' => 1 == $this->checkCVE201819126() ? $vulnerable : $check,
-                'fix' => $this->l('Set') . ' "phar.readonly = Off" ' . $this->l('in file') . ': ' . php_ini_loaded_file(),
-            ],
-            [
-                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-13784" target="_blank">CVE-2018-13784</a>',
-                'status' => 1 == version_compare(_PS_VERSION_, '1.7.3.4', '<') ? $vulnerable : $check,
-                'fix' => $this->l('Upgrade PrestaShop to latest version'),
-            ],
-            [
-                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-8823" target="_blank">CVE-2018-8823</a>, ' .
-                '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-8824" target="_blank">CVE-2018-8824</a>',
-                'status' => 1 == $this->checkCVE20188824() ? $vulnerable : $check,
-                'fix' => $this->l('Upgrade module: Responsive Mega Menu (Horizontal+Vertical+Dropdown) Pro'),
-            ],
-            [
-                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-7491" target="_blank">CVE-2018-7491</a>',
-                'status' => 1 == $this->checkCVE20187491() ? $vulnerable : $check,
-                'fix' => $this->l('Enable "Click-jack protection" in "Secure FO" above'),
-            ],
-            [
-                'check' => $this->l('PHP version') . ' (' . PHP_VERSION . ')',
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => $this->l('PHP information leakage (version)'),
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => $this->l('PHP information leakage (logs)'),
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => $this->l('SSL enabled'),
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => $this->l('SSL Enabled everywhere'),
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => $this->l('PrestaShop token'),
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => 'mod_security',
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => 'phpinfo.php',
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => 'phppsinfo.php',
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => 'robots.txt',
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => '.htaccess',
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => 'PrestaShop admin directory name',
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => $this->l('Database table prefix'),
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-            [
-                'check' => $this->l('PrestaShop debug mode'),
-                'status' => $pro_feature,
-                'fix' => $pro_feature,
-            ],
-        ];
-
-        return $helper_list->generateList($result, $fields_list);
     }
 
     protected function renderForm()
@@ -723,27 +630,6 @@ class SecurityLite extends Module
                         'is_bool' => 1,
                         'disabled' => 1,
                         'desc' => $pro_feature . $this->l('Using the HttpOnly flag when generating a cookie helps mitigate the risk of client-side script accessing the protected cookie.'),
-                        'values' => [
-                            [
-                                'id' => 'active_on',
-                                'value' => 1,
-                                'label' => $this->l('Enabled'),
-                            ],
-                            [
-                                'id' => 'active_off',
-                                'value' => 0,
-                                'label' => $this->l('Disabled'),
-                            ],
-                        ],
-                    ],
-                    [
-                        'tab' => 'secureFrontOffice',
-                        'type' => 'switch',
-                        'label' => $this->l('Block specific files'),
-                        'name' => 'LITE_BLOCK_FILE_EXTENSIONS',
-                        'is_bool' => 1,
-                        'desc' => $pro_feature . $this->l('Block executing, downloading and reading files with extensions: aspx, bash, bak, dll, exe, git, hg, ini, jsp, log, mdb, out, sql, svn, swp, tar, rar, rdf.'),
-                        'disabled' => 1,
                         'values' => [
                             [
                                 'id' => 'active_on',
@@ -1156,93 +1042,9 @@ class SecurityLite extends Module
         }
     }
 
-    private function removeHtaccessContent($path)
+    public function checkCVE201913461()
     {
-        $htaccess_content = Tools::file_get_contents($path);
-
-        if (preg_match('/\# ~security_lite~(.*?)\# ~security_lite_end~/s', $htaccess_content, $m)) {
-            $content_to_remove = $m[0];
-            $htaccess_content = str_replace($content_to_remove, '', $htaccess_content);
-        }
-        file_put_contents($path, $htaccess_content);
-    }
-
-    private function chmodFileDir($dir)
-    {
-        if (Configuration::get('LITE_PERMISSIONS')) {
-            $perms = [];
-            $perms['file'] = 0644;
-            $perms['directory'] = 0755;
-            $error_dir = null;
-            $error_file = null;
-            $dh = @opendir($dir);
-
-            if ($dh) {
-                while (false !== ($file = readdir($dh))) {
-                    if ('.' !== $file && '..' !== $file) {
-                        $fullpath = $dir . '/' . $file;
-
-                        if (!is_dir($fullpath)) {
-                            if (!chmod($fullpath, $perms['file'])) {
-                                $error_file .= '<strong>' . $this->l('Failed') . '</strong> ' . $this->l('to set file permissions on') . ' ' . $fullpath . PHP_EOL;
-                            }
-                        } else {
-                            if (chmod($fullpath, $perms['directory'])) {
-                                $this->chmodFileDir($fullpath);
-                            } else {
-                                $error_dir .= '<strong>' . $this->l('Failed') . '</strong> ' . $this->l('to set directory permissions on') . ' ' . $fullpath . PHP_EOL;
-                            }
-                        }
-                    }
-                }
-                closedir($dh);
-            }
-        }
-    }
-
-    private function blockIp()
-    {
-        if (Configuration::get('LITE_BAN_IP_ACTIVATE') && '' !== Configuration::get('LITE_BAN_IP')) {
-            $deny = explode(',', preg_replace('/\s+/', '', Configuration::get('LITE_BAN_IP')));
-
-            if (in_array($_SERVER['REMOTE_ADDR'], $deny)) {
-                header('HTTP/1.1 403 Forbidden');
-
-                die;
-            }
-        }
-    }
-
-    private function ban()
-    {
-        $this->context->employee->logout();
-
-        die('Banned');
-    }
-
-    private function getBanTime($email)
-    {
-        $sql = new DbQuery();
-        $sql->select('MAX(access_time) AS access_time');
-        $sql->from('securitylite');
-        $sql->where('banned = 1');
-        $sql->where(sprintf('email = "%s"', pSQL($email)));
-        $sqlResult = Db::getInstance()->executeS($sql);
-
-        return $sqlResult ? strtotime($sql) : 0;
-    }
-
-    private function getEldestAccessTry($email)
-    {
-        $maxRetry = (int) ConfigurationCore::get('LITE_MAX_RETRY');
-        $email = pSQL($email);
-        $query = 'SELECT IF(COUNT(*) = ' . $maxRetry .
-        ', MIN(access_time), \'0000-00-00 00:00:00\') AS access_time FROM (SELECT access_time FROM ' .
-        _DB_PREFIX_ . 'securitylite WHERE banned = 0 AND email = "' .
-        $email . '" ORDER BY access_time DESC LIMIT ' . $maxRetry . ') tmp';
-        $accessStats = Db::getInstance()->getRow($query);
-
-        return $accessStats ? strtotime($accessStats['access_time']) : 0;
+        return version_compare(_PS_VERSION_, '1.7.6.0', '<');
     }
 
     private function checkCVE20187491()
@@ -1261,6 +1063,11 @@ class SecurityLite extends Module
         } else {
             return 1;
         }
+    }
+
+    public function checkCVE201911876()
+    {
+        return is_dir(_PS_ROOT_DIR_ . '/install');
     }
 
     private function checkCVE201819126()
@@ -1288,5 +1095,156 @@ class SecurityLite extends Module
                 }
             }
         }
+    }
+
+    public function checkSystem()
+    {
+        $pro_feature = '<span style="color: #25beef;"><strong>' . $this->l('PRO FEATURE!') . '</strong></span>';
+        $helper_list = new HelperList();
+        $helper_list->module = $this;
+        $helper_list->title = $this->l('Scans your system for known security vulnerabilities and recommends options for increased protection');
+        $helper_list->shopLinkType = '';
+        $helper_list->no_link = true;
+        $helper_list->show_toolbar = true;
+        $helper_list->simple_header = false;
+        $helper_list->currentIndex = $this->context->link->getAdminLink('AdminModules', false) .
+        '&configure=' . $this->name;
+        $helper_list->token = Tools::getAdminTokenLite('AdminModules');
+        $check = '<i class="icon icon-check" style="color: green"></i>';
+        $vulnerable = '<i class="icon icon-times" style="color: red"></i>';
+        $fields_list = [
+            'check' => [
+                'title' => '<strong>' . $this->l('Check') . '</strong>',
+                'search' => false,
+                'float' => true,
+            ],
+            'status' => [
+                'title' => '<strong>' . $this->l('Status') . '</strong>',
+                'search' => false,
+                'float' => true,
+            ],
+            'fix' => [
+                'title' => '<strong>' . $this->l('How to fix') . '</strong>',
+                'search' => false,
+                'float' => true,
+            ],
+        ];
+        $result = [
+            [
+                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2019-13461" target="_blank">CVE-2019-13461</a>',
+                'status' => $this->checkCVE201913461() ? $vulnerable : $check,
+                'fix' => $this->l('Upgrade PrestaShop to latest version'),
+            ],
+            [
+                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2019-11876" target="_blank">CVE-2019-11876</a>',
+                'status' => $this->checkCVE201911876() ? $vulnerable : $check,
+                'fix' => $this->l('Delete folder') . ': ' . _PS_ROOT_DIR_ . '/install', //fix
+            ],
+            [
+                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19355" target="_blank">' . $this->l('CVE-2018-19355') . '</a>',
+                'status' => file_exists(_PS_MODULE_DIR_ . 'orderfiles/upload.php') ? $vulnerable : $check,
+                'fix' => $this->l('Upgrade PrestaShop to latest version'),
+            ],
+            [
+                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19124" target="_blank">CVE-2018-19124</a>, ' .
+                '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19125" target="_blank">CVE-2018-19125</a>, ' .
+                '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-19126" target="_blank">CVE-2018-19126</a>',
+                'status' => 1 == $this->checkCVE201819126() ? $vulnerable : $check,
+                'fix' => $this->l('Set') . ' "phar.readonly = Off" ' . $this->l('in file') . ': ' . php_ini_loaded_file(),
+            ],
+            [
+                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-13784" target="_blank">CVE-2018-13784</a>',
+                'status' => 1 == version_compare(_PS_VERSION_, '1.7.3.4', '<') ? $vulnerable : $check,
+                'fix' => $this->l('Upgrade PrestaShop to latest version'),
+            ],
+            [
+                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-8823" target="_blank">CVE-2018-8823</a>, ' .
+                '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-8824" target="_blank">CVE-2018-8824</a>',
+                'status' => 1 == $this->checkCVE20188824() ? $vulnerable : $check,
+                'fix' => $this->l('Upgrade module: Responsive Mega Menu (Horizontal+Vertical+Dropdown) Pro'),
+            ],
+            [
+                'check' => '<a href="https://nvd.nist.gov/vuln/detail/CVE-2018-7491" target="_blank">CVE-2018-7491</a>',
+                'status' => 1 == $this->checkCVE20187491() ? $vulnerable : $check,
+                'fix' => $this->l('Enable "Click-jack protection" in "Secure FO" above'),
+            ],
+            [
+                'check' => $this->l('PHP version') . ' (' . PHP_VERSION . ')',
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('PHP information leakage (version)'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('PHP information leakage (logs)'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('Secure cookies'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('Cookie HTTP only'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('SSL enabled'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('SSL Enabled everywhere'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('PrestaShop token'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => 'mod_security',
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => 'phpinfo.php',
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => 'phppsinfo.php',
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => 'robots.txt',
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => 'PrestaShop admin directory name',
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('Database table prefix'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+            [
+                'check' => $this->l('PrestaShop debug mode'),
+                'status' => $pro_feature,
+                'fix' => $pro_feature,
+            ],
+        ];
+
+        return $helper_list->generateList($result, $fields_list);
     }
 }
