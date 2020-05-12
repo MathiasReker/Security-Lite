@@ -21,8 +21,6 @@ Here are the features you will have with this FREE module:
     Check your shop for all known vulnerabilities
 
 Download Lite version here: https://github.com/MathiasReker/Security-Lite/releases/latest
- 
-This module use no overrides and passes PrestaShop's Validator.
 
 ## The PRO version can be bought here: https://addons.prestashop.com/en/website-security-access/44413-security-pro.html
 
