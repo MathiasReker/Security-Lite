@@ -903,11 +903,8 @@ class SecurityLite extends Module
     {
         $dirBackupDatabase = '/backup/database/';
         $dirBackupFiles = '/backup/files/';
-
         $featured = [];
-
         $featuredFiles = [];
-
         $list = [];
         $listFiles = [];
 

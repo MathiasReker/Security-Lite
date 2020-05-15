@@ -53,3 +53,6 @@ Works on PrestaShop 1.6.1.x, 1.7.x.x and on thirty bees 1.x.x.
 Works on PHP 5.6.x, 7.0.x, 7.1.x and 7.2.x.
 
 Everything is very well tested. No known bugs exist and the module is battle tested! The module is already in production on many stores.
+
+## License
+All rights are reserved. It is not Open Source. You cannot modify or redistribute this code without explicit permission from the copyright holder.
