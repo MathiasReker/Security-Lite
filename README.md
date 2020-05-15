@@ -11,7 +11,6 @@ Here are the features you will have with this FREE module:
     Analyze HTTP headers
     Block custom list of IP addresses
     Block custom list of user agents
-    Ban IP’s
     Automatic backup database
     Generate strong passwords
     Fix insecure permissions
