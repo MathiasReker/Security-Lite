@@ -49,7 +49,7 @@ class SecurityLite extends Module
         $this->tab = 'administration';
         $this->version = '5.0.0';
         $this->author = 'Mathias Reker';
-        $this->module_key = '71a0dda36237f958642fb61a15ccc695';
+        $this->module_key = '';
         $this->need_instance = 0;
         $this->ps_versions_compliancy = [
             'min' => '1.6.1',
