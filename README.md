@@ -1,3 +1,5 @@
+![Security Lite](https://github.com/MathiasReker/Security-Lite/blob/master/screenshot.png)
+
 # Short Description
 
 Benefits for Merchants *
@@ -58,11 +60,9 @@ Due to the analysis tools of the module, the module can find vulnerabilities on 
 The module is SEO friendly and none of the features in this module can harm your ranking.
 Google is excluded from the firewall rules, so Google will not get blocked in any way.
 
-![Security Lite](https://github.com/MathiasReker/Security-Lite/blob/master/screenshot.png)
+## Download Security Lite: https://github.com/MathiasReker/Security-Lite/releases/latest
 
-## Download Lite version here: https://github.com/MathiasReker/Security-Lite/releases/latest
+## Upgrade to Security Pro: https://addons.prestashop.com/en/website-security-access/44413-security-pro.html
 
-## The PRO version can be bought here: https://addons.prestashop.com/en/website-security-access/44413-security-pro.html
-
-## License
+# License
 All rights are reserved. It is not Open Source. You cannot modify or redistribute this code without explicit permission from the copyright holder.
