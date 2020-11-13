@@ -621,7 +621,7 @@ class SecurityLite extends Module
         // Empty password
         Configuration::updateValue('LITE_PASSWORD_GENERATOR', null);
 
-        $out[] = $this->displayInformation($this->l('You are using Security Lite. Some features are locked in this version. To unlock all features, you must upgrade to Security Pro. You can buy it from here') . ': ' . $this->generateLink('https://addons.prestashop.com/en/website-security-access/44413-security-pro-all-in-one.html', 'https://addons.prestashop.com/en/website-security-access/44413-security-pro-all-in-one.html'));
+        $out[] = $this->displayInformation($this->l('You are using Security Lite. Some features are locked in this version. To unlock all features, you must upgrade to Security Pro. You can buy it here') . ': ' . $this->generateLink('https://addons.prestashop.com/en/website-security-access/44413-security-pro-all-in-one.html', 'https://addons.prestashop.com/en/website-security-access/44413-security-pro-all-in-one.html'));
 
         // Load JS
         $this->context->controller->addJS($this->_path . 'views/js/menu.js');

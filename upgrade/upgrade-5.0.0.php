@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the securitypro package.
+ * This file is part of the securitylite package.
  *
  * @author Mathias Reker
  * @copyright Mathias Reker
