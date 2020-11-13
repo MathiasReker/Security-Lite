@@ -10,6 +10,13 @@ use IPLib\Address\AddressInterface;
 interface RangeInterface
 {
     /**
+     * Get the short string representation of this address.
+     *
+     * @return string
+     */
+    public function __toString();
+
+    /**
      * Get the string representation of this address.
      *
      * @param bool $long set to true to have a long/full representation, false otherwise
@@ -19,13 +26,6 @@ interface RangeInterface
      * @example If $long is true, you'll get '0000:0000:0000:0000:0000:0000:0000:0001/128', '::1/128' otherwise.
      */
     public function toString($long = false);
-
-    /**
-     * Get the short string representation of this address.
-     *
-     * @return string
-     */
-    public function __toString();
 
     /**
      * Get the type of the IP addresses contained in this range.
@@ -93,4 +93,28 @@ interface RangeInterface
      * @return \IPLib\Address\IPv4|null return NULL if the range is an IPv6 range, the subnet mask otherwise
      */
     public function getSubnetMask();
+
+    /**
+     * Get the subnet/CIDR representation of this range.
+     *
+     * @return \IPLib\Range\Subnet
+     */
+    public function asSubnet();
+
+    /**
+     * Get the pattern/asterisk representation (if applicable) of this range.
+     *
+     * @return \IPLib\Range\Pattern|null return NULL if this range can't be represented by a pattern notation
+     */
+    public function asPattern();
+
+    /**
+     * Get the Reverse DNS Lookup Addresses of this IP range.
+     *
+     * @return string[]
+     *
+     * @example for IPv4 it returns something like array('x.x.x.x.in-addr.arpa', 'x.x.x.x.in-addr.arpa') (where the number of 'x.' ranges from 1 to 4)
+     * @example for IPv6 it returns something like array('x.x.x.x..x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.ip6.arpa', 'x.x.x.x..x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.x.ip6.arpa') (where the number of 'x.' ranges from 1 to 32)
+     */
+    public function getReverseDNSLookupName();
 }

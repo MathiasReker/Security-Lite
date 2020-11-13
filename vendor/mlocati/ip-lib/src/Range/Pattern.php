@@ -6,7 +6,6 @@ use IPLib\Address\AddressInterface;
 use IPLib\Address\IPv4;
 use IPLib\Address\IPv6;
 use IPLib\Address\Type as AddressType;
-use IPLib\Factory;
 
 /**
  * Represents an address range in pattern format (only ending asterisks are supported).
@@ -14,7 +13,7 @@ use IPLib\Factory;
  * @example 127.0.*.*
  * @example ::/8
  */
-class Pattern implements RangeInterface
+class Pattern extends AbstractRange
 {
     /**
      * Starting address of the range.
@@ -40,7 +39,7 @@ class Pattern implements RangeInterface
     /**
      * The type of the range of this IP range.
      *
-     * @var int|null|false false if this range crosses multiple range types, null if yet to be determined
+     * @var int|false|null false if this range crosses multiple range types, null if yet to be determined
      */
     protected $rangeType;
 
@@ -59,50 +58,68 @@ class Pattern implements RangeInterface
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @see \IPLib\Range\RangeInterface::__toString()
+     */
+    public function __toString()
+    {
+        return $this->toString();
+    }
+
+    /**
      * Try get the range instance starting from its string representation.
      *
      * @param string|mixed $range
+     * @param bool $supportNonDecimalIPv4 set to true to support parsing non decimal (that is, octal and hexadecimal) IPv4 addresses
      *
      * @return static|null
      */
-    public static function fromString($range)
+    public static function fromString($range, $supportNonDecimalIPv4 = false)
     {
-        $result = null;
-        if (is_string($range) && strpos($range, '*') !== false) {
-            $matches = null;
-            if ($range === '*.*.*.*') {
-                $result = new static(IPv4::fromString('0.0.0.0'), IPv4::fromString('255.255.255.255'), 4);
-            } elseif (strpos($range, '.') !== false && preg_match('/^[^*]+((?:\.\*)+)$/', $range, $matches)) {
-                $asterisksCount = strlen($matches[1]) >> 1;
-                if ($asterisksCount > 0) {
-                    $missingDots = 3 - substr_count($range, '.');
-                    if ($missingDots > 0) {
-                        $range .= str_repeat('.*', $missingDots);
-                        $asterisksCount += $missingDots;
-                    }
-                }
-                $fromAddress = IPv4::fromString(str_replace('*', '0', $range));
-                if ($fromAddress !== null) {
-                    $fixedBytes = array_slice($fromAddress->getBytes(), 0, -$asterisksCount);
-                    $otherBytes = array_fill(0, $asterisksCount, 255);
-                    $toAddress = IPv4::fromBytes(array_merge($fixedBytes, $otherBytes));
-                    $result = new static($fromAddress, $toAddress, $asterisksCount);
-                }
-            } elseif ($range === '*:*:*:*:*:*:*:*') {
-                $result = new static(IPv6::fromString('::'), IPv6::fromString('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'), 8);
-            } elseif (strpos($range, ':') !== false && preg_match('/^[^*]+((?::\*)+)$/', $range, $matches)) {
-                $asterisksCount = strlen($matches[1]) >> 1;
-                $fromAddress = IPv6::fromString(str_replace('*', '0', $range));
-                if ($fromAddress !== null) {
-                    $fixedWords = array_slice($fromAddress->getWords(), 0, -$asterisksCount);
-                    $otherWords = array_fill(0, $asterisksCount, 0xffff);
-                    $toAddress = IPv6::fromWords(array_merge($fixedWords, $otherWords));
-                    $result = new static($fromAddress, $toAddress, $asterisksCount);
+        if (!is_string($range) || strpos($range, '*') === false) {
+            return null;
+        }
+        if ($range === '*.*.*.*') {
+            return new static(IPv4::fromString('0.0.0.0'), IPv4::fromString('255.255.255.255'), 4);
+        }
+        if ($range === '*:*:*:*:*:*:*:*') {
+            return new static(IPv6::fromString('::'), IPv6::fromString('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'), 8);
+        }
+        $matches = null;
+        if (strpos($range, '.') !== false && preg_match('/^[^*]+((?:\.\*)+)$/', $range, $matches)) {
+            $asterisksCount = strlen($matches[1]) >> 1;
+            if ($asterisksCount > 0) {
+                $missingDots = 3 - substr_count($range, '.');
+                if ($missingDots > 0) {
+                    $range .= str_repeat('.*', $missingDots);
+                    $asterisksCount += $missingDots;
                 }
             }
+            $fromAddress = IPv4::fromString(str_replace('*', '0', $range), true, $supportNonDecimalIPv4);
+            if ($fromAddress === null) {
+                return null;
+            }
+            $fixedBytes = array_slice($fromAddress->getBytes(), 0, -$asterisksCount);
+            $otherBytes = array_fill(0, $asterisksCount, 255);
+            $toAddress = IPv4::fromBytes(array_merge($fixedBytes, $otherBytes));
+
+            return new static($fromAddress, $toAddress, $asterisksCount);
+        }
+        if (strpos($range, ':') !== false && preg_match('/^[^*]+((?::\*)+)$/', $range, $matches)) {
+            $asterisksCount = strlen($matches[1]) >> 1;
+            $fromAddress = IPv6::fromString(str_replace('*', '0', $range));
+            if ($fromAddress === null) {
+                return null;
+            }
+            $fixedWords = array_slice($fromAddress->getWords(), 0, -$asterisksCount);
+            $otherWords = array_fill(0, $asterisksCount, 0xffff);
+            $toAddress = IPv6::fromWords(array_merge($fixedWords, $otherWords));
+
+            return new static($fromAddress, $toAddress, $asterisksCount);
         }
 
-        return $result;
+        return null;
     }
 
     /**
@@ -136,7 +153,7 @@ class Pattern implements RangeInterface
                     $bytes = array_pad($bytes, 16, 1);
                     $address = IPv6::fromBytes($bytes);
                     $before = substr($address->toString(false), 0, -strlen(':101') * $this->asterisksCount);
-                    $result = $before.str_repeat(':*', $this->asterisksCount);
+                    $result = $before . str_repeat(':*', $this->asterisksCount);
                 }
                 break;
             default:
@@ -149,104 +166,11 @@ class Pattern implements RangeInterface
     /**
      * {@inheritdoc}
      *
-     * @see \IPLib\Range\RangeInterface::__toString()
-     */
-    public function __toString()
-    {
-        return $this->toString();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
      * @see \IPLib\Range\RangeInterface::getAddressType()
      */
     public function getAddressType()
     {
         return $this->fromAddress->getAddressType();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @see \IPLib\Range\RangeInterface::getRangeType()
-     */
-    public function getRangeType()
-    {
-        if ($this->rangeType === null) {
-            $addressType = $this->getAddressType();
-            if ($addressType === AddressType::T_IPv6 && Subnet::get6to4()->containsRange($this)) {
-                $this->rangeType = Factory::rangeFromBoundaries($this->fromAddress->toIPv4(), $this->toAddress->toIPv4())->getRangeType();
-            } else {
-                switch ($addressType) {
-                    case AddressType::T_IPv4:
-                        $defaultType = IPv4::getDefaultReservedRangeType();
-                        $reservedRanges = IPv4::getReservedRanges();
-                        break;
-                    case AddressType::T_IPv6:
-                        $defaultType = IPv6::getDefaultReservedRangeType();
-                        $reservedRanges = IPv6::getReservedRanges();
-                        break;
-                    default:
-                        throw new \Exception('@todo'); // @codeCoverageIgnore
-                }
-                $rangeType = null;
-                foreach ($reservedRanges as $reservedRange) {
-                    $rangeType = $reservedRange->getRangeType($this);
-                    if ($rangeType !== null) {
-                        break;
-                    }
-                }
-                $this->rangeType = $rangeType === null ? $defaultType : $rangeType;
-            }
-        }
-
-        return $this->rangeType === false ? null : $this->rangeType;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @see \IPLib\Range\RangeInterface::contains()
-     */
-    public function contains(AddressInterface $address)
-    {
-        $result = false;
-        if ($address->getAddressType() === $this->getAddressType()) {
-            $cmp = $address->getComparableString();
-            $from = $this->getComparableStartString();
-            if ($cmp >= $from) {
-                $to = $this->getComparableEndString();
-                if ($cmp <= $to) {
-                    $result = true;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @see \IPLib\Range\RangeInterface::containsRange()
-     */
-    public function containsRange(RangeInterface $range)
-    {
-        $result = false;
-        if ($range->getAddressType() === $this->getAddressType()) {
-            $myStart = $this->getComparableStartString();
-            $itsStart = $range->getComparableStartString();
-            if ($itsStart >= $myStart) {
-                $myEnd = $this->getComparableEndString();
-                $itsEnd = $range->getComparableEndString();
-                if ($itsEnd <= $myEnd) {
-                    $result = true;
-                }
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -290,9 +214,9 @@ class Pattern implements RangeInterface
     }
 
     /**
-     * Get the subnet/CIDR representation of this range.
+     * {@inheritdoc}
      *
-     * @return \IPLib\Range\Subnet
+     * @see \IPLib\Range\RangeInterface::asSubnet()
      */
     public function asSubnet()
     {
@@ -302,6 +226,16 @@ class Pattern implements RangeInterface
             case AddressType::T_IPv6:
                 return new Subnet($this->getStartAddress(), $this->getEndAddress(), 16 * (8 - $this->asterisksCount));
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see \IPLib\Range\RangeInterface::asPattern()
+     */
+    public function asPattern()
+    {
+        return $this;
     }
 
     /**
@@ -327,5 +261,15 @@ class Pattern implements RangeInterface
         }
 
         return IPv4::fromBytes($bytes);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see \IPLib\Range\RangeInterface::getReverseDNSLookupName()
+     */
+    public function getReverseDNSLookupName()
+    {
+        return $this->asterisksCount === 0 ? array($this->getStartAddress()->getReverseDNSLookupName()) : $this->asSubnet()->getReverseDNSLookupName();
     }
 }

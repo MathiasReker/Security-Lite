@@ -13,7 +13,7 @@ use IPLib\Factory;
  * @example 127.0.0.1
  * @example ::1
  */
-class Single implements RangeInterface
+class Single extends AbstractRange
 {
     /**
      * @var \IPLib\Address\AddressInterface
@@ -31,16 +31,27 @@ class Single implements RangeInterface
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @see \IPLib\Range\RangeInterface::__toString()
+     */
+    public function __toString()
+    {
+        return $this->address->__toString();
+    }
+
+    /**
      * Try get the range instance starting from its string representation.
      *
      * @param string|mixed $range
+     * @param bool $supportNonDecimalIPv4 set to true to support parsing non decimal (that is, octal and hexadecimal) IPv4 addresses
      *
      * @return static|null
      */
-    public static function fromString($range)
+    public static function fromString($range, $supportNonDecimalIPv4 = false)
     {
         $result = null;
-        $address = Factory::addressFromString($range);
+        $address = Factory::addressFromString($range, true, true, $supportNonDecimalIPv4);
         if ($address !== null) {
             $result = new static($address);
         }
@@ -68,16 +79,6 @@ class Single implements RangeInterface
     public function toString($long = false)
     {
         return $this->address->toString($long);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @see \IPLib\Range\RangeInterface::__toString()
-     */
-    public function __toString()
-    {
-        return $this->address->__toString();
     }
 
     /**
@@ -177,6 +178,31 @@ class Single implements RangeInterface
     /**
      * {@inheritdoc}
      *
+     * @see \IPLib\Range\RangeInterface::asSubnet()
+     */
+    public function asSubnet()
+    {
+        $networkPrefixes = array(
+            AddressType::T_IPv4 => 32,
+            AddressType::T_IPv6 => 128,
+        );
+
+        return new Subnet($this->address, $this->address, $networkPrefixes[$this->address->getAddressType()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see \IPLib\Range\RangeInterface::asPattern()
+     */
+    public function asPattern()
+    {
+        return new Pattern($this->address, $this->address, 0);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * @see \IPLib\Range\RangeInterface::getSubnetMask()
      */
     public function getSubnetMask()
@@ -186,5 +212,15 @@ class Single implements RangeInterface
         }
 
         return IPv4::fromBytes(array(255, 255, 255, 255));
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see \IPLib\Range\RangeInterface::getReverseDNSLookupName()
+     */
+    public function getReverseDNSLookupName()
+    {
+        return array($this->getStartAddress()->getReverseDNSLookupName());
     }
 }

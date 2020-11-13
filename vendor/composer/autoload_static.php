@@ -4,25 +4,12 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit3925021fccd9b7bb9c1949323f8f16f3
+class ComposerStaticInitb33f02c2794c19668c2dba8dd3d94f2c
 {
-    public static $files = array (
-        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
-    );
-
     public static $prefixLengthsPsr4 = array (
-        'S' => 
-        array (
-            'Symfony\\Component\\Finder\\' => 25,
-        ),
         'R' => 
         array (
             'RobThree\\Auth\\' => 14,
-        ),
-        'P' => 
-        array (
-            'Psr\\Http\\Message\\' => 17,
-            'PhpZip\\' => 7,
         ),
         'I' => 
         array (
@@ -31,21 +18,9 @@ class ComposerStaticInit3925021fccd9b7bb9c1949323f8f16f3
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Component\\Finder\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/finder',
-        ),
         'RobThree\\Auth\\' => 
         array (
             0 => __DIR__ . '/..' . '/robthree/twofactorauth/lib',
-        ),
-        'Psr\\Http\\Message\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-        ),
-        'PhpZip\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/nelexa/zip/src',
         ),
         'IPLib\\' => 
         array (
@@ -54,89 +29,20 @@ class ComposerStaticInit3925021fccd9b7bb9c1949323f8f16f3
     );
 
     public static $classMap = array (
+        'DG\\ComposerCleaner\\Cleaner' => __DIR__ . '/..' . '/dg/composer-cleaner/src/ComposerCleaner/Cleaner.php',
+        'DG\\ComposerCleaner\\Plugin' => __DIR__ . '/..' . '/dg/composer-cleaner/src/ComposerCleaner/Plugin.php',
         'IPLib\\Address\\AddressInterface' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Address/AddressInterface.php',
         'IPLib\\Address\\AssignedRange' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Address/AssignedRange.php',
         'IPLib\\Address\\IPv4' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Address/IPv4.php',
         'IPLib\\Address\\IPv6' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Address/IPv6.php',
         'IPLib\\Address\\Type' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Address/Type.php',
         'IPLib\\Factory' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Factory.php',
+        'IPLib\\Range\\AbstractRange' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Range/AbstractRange.php',
         'IPLib\\Range\\Pattern' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Range/Pattern.php',
         'IPLib\\Range\\RangeInterface' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Range/RangeInterface.php',
         'IPLib\\Range\\Single' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Range/Single.php',
         'IPLib\\Range\\Subnet' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Range/Subnet.php',
         'IPLib\\Range\\Type' => __DIR__ . '/..' . '/mlocati/ip-lib/src/Range/Type.php',
-        'PhpZip\\Constants\\DosAttrs' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/DosAttrs.php',
-        'PhpZip\\Constants\\DosCodePage' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/DosCodePage.php',
-        'PhpZip\\Constants\\GeneralPurposeBitFlag' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/GeneralPurposeBitFlag.php',
-        'PhpZip\\Constants\\UnixStat' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/UnixStat.php',
-        'PhpZip\\Constants\\ZipCompressionLevel' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/ZipCompressionLevel.php',
-        'PhpZip\\Constants\\ZipCompressionMethod' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/ZipCompressionMethod.php',
-        'PhpZip\\Constants\\ZipConstants' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/ZipConstants.php',
-        'PhpZip\\Constants\\ZipEncryptionMethod' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/ZipEncryptionMethod.php',
-        'PhpZip\\Constants\\ZipOptions' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/ZipOptions.php',
-        'PhpZip\\Constants\\ZipPlatform' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/ZipPlatform.php',
-        'PhpZip\\Constants\\ZipVersion' => __DIR__ . '/..' . '/nelexa/zip/src/Constants/ZipVersion.php',
-        'PhpZip\\Exception\\Crc32Exception' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/Crc32Exception.php',
-        'PhpZip\\Exception\\InvalidArgumentException' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/InvalidArgumentException.php',
-        'PhpZip\\Exception\\RuntimeException' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/RuntimeException.php',
-        'PhpZip\\Exception\\ZipAuthenticationException' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/ZipAuthenticationException.php',
-        'PhpZip\\Exception\\ZipCryptoException' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/ZipCryptoException.php',
-        'PhpZip\\Exception\\ZipEntryNotFoundException' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/ZipEntryNotFoundException.php',
-        'PhpZip\\Exception\\ZipException' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/ZipException.php',
-        'PhpZip\\Exception\\ZipUnsupportMethodException' => __DIR__ . '/..' . '/nelexa/zip/src/Exception/ZipUnsupportMethodException.php',
-        'PhpZip\\IO\\Filter\\Cipher\\Pkware\\PKCryptContext' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Filter/Cipher/Pkware/PKCryptContext.php',
-        'PhpZip\\IO\\Filter\\Cipher\\Pkware\\PKDecryptionStreamFilter' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Filter/Cipher/Pkware/PKDecryptionStreamFilter.php',
-        'PhpZip\\IO\\Filter\\Cipher\\Pkware\\PKEncryptionStreamFilter' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Filter/Cipher/Pkware/PKEncryptionStreamFilter.php',
-        'PhpZip\\IO\\Filter\\Cipher\\WinZipAes\\WinZipAesContext' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Filter/Cipher/WinZipAes/WinZipAesContext.php',
-        'PhpZip\\IO\\Filter\\Cipher\\WinZipAes\\WinZipAesDecryptionStreamFilter' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Filter/Cipher/WinZipAes/WinZipAesDecryptionStreamFilter.php',
-        'PhpZip\\IO\\Filter\\Cipher\\WinZipAes\\WinZipAesEncryptionStreamFilter' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Filter/Cipher/WinZipAes/WinZipAesEncryptionStreamFilter.php',
-        'PhpZip\\IO\\Stream\\ResponseStream' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Stream/ResponseStream.php',
-        'PhpZip\\IO\\Stream\\ZipEntryStreamWrapper' => __DIR__ . '/..' . '/nelexa/zip/src/IO/Stream/ZipEntryStreamWrapper.php',
-        'PhpZip\\IO\\ZipReader' => __DIR__ . '/..' . '/nelexa/zip/src/IO/ZipReader.php',
-        'PhpZip\\IO\\ZipWriter' => __DIR__ . '/..' . '/nelexa/zip/src/IO/ZipWriter.php',
-        'PhpZip\\Model\\Data\\ZipFileData' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Data/ZipFileData.php',
-        'PhpZip\\Model\\Data\\ZipNewData' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Data/ZipNewData.php',
-        'PhpZip\\Model\\Data\\ZipSourceFileData' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Data/ZipSourceFileData.php',
-        'PhpZip\\Model\\EndOfCentralDirectory' => __DIR__ . '/..' . '/nelexa/zip/src/Model/EndOfCentralDirectory.php',
-        'PhpZip\\Model\\Extra\\ExtraFieldsCollection' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/ExtraFieldsCollection.php',
-        'PhpZip\\Model\\Extra\\Fields\\AbstractUnicodeExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/AbstractUnicodeExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\ApkAlignmentExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/ApkAlignmentExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\AsiExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/AsiExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\ExtendedTimestampExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/ExtendedTimestampExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\JarMarkerExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/JarMarkerExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\NewUnixExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/NewUnixExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\NtfsExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/NtfsExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\OldUnixExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/OldUnixExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\UnicodeCommentExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/UnicodeCommentExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\UnicodePathExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/UnicodePathExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\UnrecognizedExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/UnrecognizedExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\WinZipAesExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/WinZipAesExtraField.php',
-        'PhpZip\\Model\\Extra\\Fields\\Zip64ExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/Fields/Zip64ExtraField.php',
-        'PhpZip\\Model\\Extra\\ZipExtraDriver' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/ZipExtraDriver.php',
-        'PhpZip\\Model\\Extra\\ZipExtraField' => __DIR__ . '/..' . '/nelexa/zip/src/Model/Extra/ZipExtraField.php',
-        'PhpZip\\Model\\ImmutableZipContainer' => __DIR__ . '/..' . '/nelexa/zip/src/Model/ImmutableZipContainer.php',
-        'PhpZip\\Model\\ZipContainer' => __DIR__ . '/..' . '/nelexa/zip/src/Model/ZipContainer.php',
-        'PhpZip\\Model\\ZipData' => __DIR__ . '/..' . '/nelexa/zip/src/Model/ZipData.php',
-        'PhpZip\\Model\\ZipEntry' => __DIR__ . '/..' . '/nelexa/zip/src/Model/ZipEntry.php',
-        'PhpZip\\Model\\ZipEntryMatcher' => __DIR__ . '/..' . '/nelexa/zip/src/Model/ZipEntryMatcher.php',
-        'PhpZip\\Model\\ZipInfo' => __DIR__ . '/..' . '/nelexa/zip/src/Model/ZipInfo.php',
-        'PhpZip\\Util\\CryptoUtil' => __DIR__ . '/..' . '/nelexa/zip/src/Util/CryptoUtil.php',
-        'PhpZip\\Util\\DateTimeConverter' => __DIR__ . '/..' . '/nelexa/zip/src/Util/DateTimeConverter.php',
-        'PhpZip\\Util\\FileAttribUtil' => __DIR__ . '/..' . '/nelexa/zip/src/Util/FileAttribUtil.php',
-        'PhpZip\\Util\\FilesUtil' => __DIR__ . '/..' . '/nelexa/zip/src/Util/FilesUtil.php',
-        'PhpZip\\Util\\Iterator\\IgnoreFilesFilterIterator' => __DIR__ . '/..' . '/nelexa/zip/src/Util/Iterator/IgnoreFilesFilterIterator.php',
-        'PhpZip\\Util\\Iterator\\IgnoreFilesRecursiveFilterIterator' => __DIR__ . '/..' . '/nelexa/zip/src/Util/Iterator/IgnoreFilesRecursiveFilterIterator.php',
-        'PhpZip\\Util\\PackUtil' => __DIR__ . '/..' . '/nelexa/zip/src/Util/PackUtil.php',
-        'PhpZip\\Util\\StringUtil' => __DIR__ . '/..' . '/nelexa/zip/src/Util/StringUtil.php',
-        'PhpZip\\ZipFile' => __DIR__ . '/..' . '/nelexa/zip/src/ZipFile.php',
-        'PhpZip\\ZipFileInterface' => __DIR__ . '/..' . '/nelexa/zip/src/ZipFileInterface.php',
-        'Psr\\Http\\Message\\MessageInterface' => __DIR__ . '/..' . '/psr/http-message/src/MessageInterface.php',
-        'Psr\\Http\\Message\\RequestInterface' => __DIR__ . '/..' . '/psr/http-message/src/RequestInterface.php',
-        'Psr\\Http\\Message\\ResponseInterface' => __DIR__ . '/..' . '/psr/http-message/src/ResponseInterface.php',
-        'Psr\\Http\\Message\\ServerRequestInterface' => __DIR__ . '/..' . '/psr/http-message/src/ServerRequestInterface.php',
-        'Psr\\Http\\Message\\StreamInterface' => __DIR__ . '/..' . '/psr/http-message/src/StreamInterface.php',
-        'Psr\\Http\\Message\\UploadedFileInterface' => __DIR__ . '/..' . '/psr/http-message/src/UploadedFileInterface.php',
-        'Psr\\Http\\Message\\UriInterface' => __DIR__ . '/..' . '/psr/http-message/src/UriInterface.php',
         'RobThree\\Auth\\Providers\\Qr\\BaseHTTPQRCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/BaseHTTPQRCodeProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\IQRCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/IQRCodeProvider.php',
         'RobThree\\Auth\\Providers\\Qr\\ImageChartsQRCodeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Qr/ImageChartsQRCodeProvider.php',
@@ -153,35 +59,14 @@ class ComposerStaticInit3925021fccd9b7bb9c1949323f8f16f3
         'RobThree\\Auth\\Providers\\Time\\NTPTimeProvider' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/Providers/Time/NTPTimeProvider.php',
         'RobThree\\Auth\\TwoFactorAuth' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuth.php',
         'RobThree\\Auth\\TwoFactorAuthException' => __DIR__ . '/..' . '/robthree/twofactorauth/lib/TwoFactorAuthException.php',
-        'Symfony\\Component\\Finder\\Comparator\\Comparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/Comparator.php',
-        'Symfony\\Component\\Finder\\Comparator\\DateComparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/DateComparator.php',
-        'Symfony\\Component\\Finder\\Comparator\\NumberComparator' => __DIR__ . '/..' . '/symfony/finder/Comparator/NumberComparator.php',
-        'Symfony\\Component\\Finder\\Exception\\AccessDeniedException' => __DIR__ . '/..' . '/symfony/finder/Exception/AccessDeniedException.php',
-        'Symfony\\Component\\Finder\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/symfony/finder/Exception/ExceptionInterface.php',
-        'Symfony\\Component\\Finder\\Finder' => __DIR__ . '/..' . '/symfony/finder/Finder.php',
-        'Symfony\\Component\\Finder\\Glob' => __DIR__ . '/..' . '/symfony/finder/Glob.php',
-        'Symfony\\Component\\Finder\\Iterator\\CustomFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/CustomFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\DateRangeFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/DateRangeFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\DepthRangeFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/DepthRangeFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\ExcludeDirectoryFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/ExcludeDirectoryFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\FileTypeFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/FileTypeFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\FilecontentFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/FilecontentFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\FilenameFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/FilenameFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\FilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/FilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\MultiplePcreFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/MultiplePcreFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\PathFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/PathFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\RecursiveDirectoryIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/RecursiveDirectoryIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\SizeRangeFilterIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/SizeRangeFilterIterator.php',
-        'Symfony\\Component\\Finder\\Iterator\\SortableIterator' => __DIR__ . '/..' . '/symfony/finder/Iterator/SortableIterator.php',
-        'Symfony\\Component\\Finder\\SplFileInfo' => __DIR__ . '/..' . '/symfony/finder/SplFileInfo.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit3925021fccd9b7bb9c1949323f8f16f3::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit3925021fccd9b7bb9c1949323f8f16f3::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit3925021fccd9b7bb9c1949323f8f16f3::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitb33f02c2794c19668c2dba8dd3d94f2c::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitb33f02c2794c19668c2dba8dd3d94f2c::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitb33f02c2794c19668c2dba8dd3d94f2c::$classMap;
 
         }, null, ClassLoader::class);
     }

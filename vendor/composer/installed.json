@@ -1,17 +1,65 @@
 [
     {
-        "name": "mlocati/ip-lib",
-        "version": "1.9.0",
-        "version_normalized": "1.9.0.0",
+        "name": "dg/composer-cleaner",
+        "version": "v2.1",
+        "version_normalized": "2.1.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/mlocati/ip-lib.git",
-            "reference": "b844659e3b87a461d1a8fe8e3e374aa6c4a5d902"
+            "url": "https://github.com/dg/composer-cleaner.git",
+            "reference": "91f865f0b50c66dd647955a0e5ba7745d8086945"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/mlocati/ip-lib/zipball/b844659e3b87a461d1a8fe8e3e374aa6c4a5d902",
-            "reference": "b844659e3b87a461d1a8fe8e3e374aa6c4a5d902",
+            "url": "https://api.github.com/repos/dg/composer-cleaner/zipball/91f865f0b50c66dd647955a0e5ba7745d8086945",
+            "reference": "91f865f0b50c66dd647955a0e5ba7745d8086945",
+            "shasum": ""
+        },
+        "require": {
+            "composer-plugin-api": "^1.0",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "nette/tester": "^1.7"
+        },
+        "time": "2019-02-05T21:18:31+00:00",
+        "type": "composer-plugin",
+        "extra": {
+            "class": "DG\\ComposerCleaner\\Plugin"
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "David Grudl",
+                "homepage": "https://davidgrudl.com"
+            }
+        ],
+        "description": "Victor The Cleaner: removes unnecessary files from vendor directory.",
+        "keywords": [
+            "composer"
+        ]
+    },
+    {
+        "name": "mlocati/ip-lib",
+        "version": "1.13.0",
+        "version_normalized": "1.13.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/mlocati/ip-lib.git",
+            "reference": "334de586c7894afd838be44d73e72d8e97e5b0ff"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/mlocati/ip-lib/zipball/334de586c7894afd838be44d73e72d8e97e5b0ff",
+            "reference": "334de586c7894afd838be44d73e72d8e97e5b0ff",
             "shasum": ""
         },
         "require": {
@@ -22,7 +70,7 @@
             "phpunit/dbunit": "^1.4 || ^2 || ^3 || ^4",
             "phpunit/phpunit": "^4.8 || ^5.7 || ^6.5"
         },
-        "time": "2019-09-20T08:26:10+00:00",
+        "time": "2020-10-04T12:22:58+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -50,182 +98,23 @@
             "addresses",
             "ipv4",
             "ipv6",
+            "manage",
+            "managing",
             "matching",
             "network",
             "networking",
             "range",
             "subnet"
-        ]
-    },
-    {
-        "name": "nelexa/zip",
-        "version": "3.3.1",
-        "version_normalized": "3.3.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/Ne-Lexa/php-zip.git",
-            "reference": "52ce79d4d255cc1134863b3564feae8eb00a0991"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/Ne-Lexa/php-zip/zipball/52ce79d4d255cc1134863b3564feae8eb00a0991",
-            "reference": "52ce79d4d255cc1134863b3564feae8eb00a0991",
-            "shasum": ""
-        },
-        "require": {
-            "ext-zlib": "*",
-            "paragonie/random_compat": "*",
-            "php": "^5.5.9 || ^7.0",
-            "psr/http-message": "^1.0",
-            "symfony/finder": "^3.0|^4.0|^5.0"
-        },
-        "require-dev": {
-            "ext-bz2": "*",
-            "ext-fileinfo": "*",
-            "ext-openssl": "*",
-            "ext-xml": "*",
-            "guzzlehttp/psr7": "^1.6",
-            "phpunit/phpunit": "^4.8|^5.7",
-            "symfony/var-dumper": "^3.0|^4.0|^5.0"
-        },
-        "suggest": {
-            "ext-bz2": "Needed to support BZIP2 compression",
-            "ext-fileinfo": "Needed to get mime-type file",
-            "ext-mcrypt": "Needed to support encrypt zip entries or use ext-openssl",
-            "ext-openssl": "Needed to support encrypt zip entries or use ext-mcrypt"
-        },
-        "time": "2020-04-01T13:33:45+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "PhpZip\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
         ],
-        "authors": [
+        "funding": [
             {
-                "name": "Ne-Lexa",
-                "email": "alexey@nelexa.ru",
-                "role": "Developer"
-            }
-        ],
-        "description": "PhpZip is a php-library for extended work with ZIP-archives. Open, create, update, delete, extract and get info tool. Supports appending to existing ZIP files, WinZip AES encryption, Traditional PKWARE Encryption, ZipAlign tool, BZIP2 compression, external file attributes and ZIP64 extensions. Alternative ZipArchive. It does not require php-zip extension.",
-        "homepage": "https://github.com/Ne-Lexa/php-zip",
-        "keywords": [
-            "archive",
-            "extract",
-            "unzip",
-            "winzip",
-            "zip",
-            "zipalign",
-            "ziparchive"
-        ]
-    },
-    {
-        "name": "paragonie/random_compat",
-        "version": "v2.0.18",
-        "version_normalized": "2.0.18.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/paragonie/random_compat.git",
-            "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
-            "reference": "0a58ef6e3146256cc3dc7cc393927bcc7d1b72db",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "4.*|5.*"
-        },
-        "suggest": {
-            "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-        },
-        "time": "2019-01-03T20:59:08+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "lib/random.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
+                "url": "https://github.com/sponsors/mlocati",
+                "type": "github"
+            },
             {
-                "name": "Paragon Initiative Enterprises",
-                "email": "security@paragonie.com",
-                "homepage": "https://paragonie.com"
+                "url": "https://paypal.me/mlocati",
+                "type": "other"
             }
-        ],
-        "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-        "keywords": [
-            "csprng",
-            "polyfill",
-            "pseudorandom",
-            "random"
-        ]
-    },
-    {
-        "name": "psr/http-message",
-        "version": "1.0.1",
-        "version_normalized": "1.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/php-fig/http-message.git",
-            "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
-            "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "time": "2016-08-06T14:39:51+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Psr\\Http\\Message\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "PHP-FIG",
-                "homepage": "http://www.php-fig.org/"
-            }
-        ],
-        "description": "Common interface for HTTP messages",
-        "homepage": "https://github.com/php-fig/http-message",
-        "keywords": [
-            "http",
-            "http-message",
-            "psr",
-            "psr-7",
-            "request",
-            "response"
         ]
     },
     {
@@ -280,56 +169,5 @@
             "php",
             "tfa"
         ]
-    },
-    {
-        "name": "symfony/finder",
-        "version": "v3.4.40",
-        "version_normalized": "3.4.40.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/finder.git",
-            "reference": "5ec813ccafa8164ef21757e8c725d3a57da59200"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/finder/zipball/5ec813ccafa8164ef21757e8c725d3a57da59200",
-            "reference": "5ec813ccafa8164ef21757e8c725d3a57da59200",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.5.9|>=7.0.8"
-        },
-        "time": "2020-02-14T07:34:21+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.4-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\Finder\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Finder Component",
-        "homepage": "https://symfony.com"
     }
 ]

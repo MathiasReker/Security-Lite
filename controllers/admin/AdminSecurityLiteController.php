@@ -1,17 +1,18 @@
 <?php
 /**
- * 2020 Mathias R.
+ * This file is part of the securitypro package.
  *
- * NOTICE OF LICENSE
+ * @author Mathias Reker
+ * @copyright Mathias Reker
+ * @license Commercial Software License
  *
- * This file is licensed under the Software License Agreement
- * With the purchase or the installation of the software in your application
- * you accept the license agreement.
- *
- * @author    Mathias R.
- * @copyright Mathias R.
- * @license   Commercial license (You can not resell or redistribute this software.)
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
+if (!\defined('_PS_VERSION_')) {
+    exit;
+}
 
 class AdminSecurityLiteController extends ModuleAdminController
 {
@@ -19,6 +20,6 @@ class AdminSecurityLiteController extends ModuleAdminController
     {
         parent::__construct();
 
-        \Tools::redirectAdmin(\Context::getContext()->link->getAdminLink('AdminModules', true) . '&configure=securitylite');
+        return \Tools::redirectAdmin(\Context::getContext()->link->getAdminLink('AdminModules', true) . '&configure=securitylite&tab_reset=1');
     }
 }

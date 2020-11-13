@@ -1,16 +1,13 @@
 <?php
 /**
- * 2020 Mathias R.
+ * This file is part of the securitypro package.
  *
- * NOTICE OF LICENSE
+ * @author Mathias Reker
+ * @copyright Mathias Reker
+ * @license Commercial Software License
  *
- * This file is licensed under the Software License Agreement
- * With the purchase or the installation of the software in your application
- * you accept the license agreement.
- *
- * @author    Mathias R.
- * @copyright Mathias R.
- * @license   Commercial license (You can not resell or redistribute this software.)
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 \header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
