@@ -23,19 +23,9 @@ function upgrade_module_5_0_0($module)
 {
     $module->registerHook(
         [
-            'displayBackOfficeTop',
-            'displayHeader',
             'displayMaintenance',
         ]
     );
-
-    if (Tools::version_compare(_PS_VERSION_, '1.7.7.0', '>=')) {
-        $module->registerHook(
-            [
-                'actionAdminLoginControllerBefore',
-            ]
-        );
-    }
 
     return true;
 }
