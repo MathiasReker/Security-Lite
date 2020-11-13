@@ -36,7 +36,8 @@ Everything is very well tested. No known bugs exist and the module is battle-tes
 The module is multistore compatible and supports multi-language as well.
  
 # Other
-Is the module using overrides?
+
+## Is the module using overrides?
 The module does not use overrides and none of the core-files is modified, so you are completely safe against conflicts between other modules.
 As this is an all-in-one module, you don’t need a bunch of security modules that could be conflicting. All the features in this module are built to work together.
 
