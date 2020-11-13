@@ -11,20 +11,20 @@ Your customer's data are better protected in case of hacking attempts. Your cust
 # Installation
 The installation of Security Lite is 100 % according to PrestaShop's standards.
 
-For PrestaShop 1.6.1.x and thirty bees 1.x.x
-Login into your shop's back office
-Go to “Add a new module”
-Click on “Choose a file”
-Browse for the module
-Click on “Upload this module”
-Look for the module and click “Install”
+## For PrestaShop 1.6.1.x and thirty bees 1.x.x
+- Login into your shop's back office
+- Go to “Add a new module”
+- Click on “Choose a file”
+- Browse for the module
+- Click on “Upload this module”
+- Look for the module and click “Install”
 
-For PrestaShop 1.7.x.x
-Login into your shop's back office
-Go to “Module Manager”
-Click on “Upload a Module”
-Browse for the module
-Upload and install the module
+## For PrestaShop 1.7.x.x
+- Login into your shop's back office
+- Go to “Module Manager”
+- Click on “Upload a Module”
+- Browse for the module
+- Upload and install the module
  
 # Recommendations
 Tested on all major server software (Apache, Nginx, LiteSpeed, etc.).
