@@ -1,8 +1,6 @@
 ![Security Lite](https://github.com/MathiasReker/Security-Lite/blob/master/screenshot.png)
 
-# Short Description
-
-Benefits for Merchants *
+# Benefits for Merchants
 Security Pro is the industry leader in PrestaShop security modules. It’s the most advanced PrestaShop security module on the market. The module will automatically scan your website for common threats. You will be alerted if any signs of a security breach are detected with the instructions to fix them. The module can add additional layers of security to your PrestaShop website that will benefit in case someone attacks your website. Security Lite is a free version that includes some of the features.
 
 PrestaShop in its own is very secure. It's among the most secure content management systems available. When said, its good practice to add extra layers of security. I added all these layers as features so you can enable them without any coding knowledge to follow best practice. 
