@@ -47,7 +47,7 @@ class SecurityLite extends Module
     {
         $this->name = 'securitylite';
         $this->tab = 'administration';
-        $this->version = '5.0.0';
+        $this->version = '5.0.1';
         $this->author = 'Mathias Reker';
         $this->module_key = '';
         $this->need_instance = 0;
